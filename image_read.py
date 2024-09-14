@@ -114,3 +114,24 @@
 # # cv2.imshow('Downscaled Image', upscale_image)
 # # cv2.waitKey(0)
 # # cv2.destroyAllWindows()
+
+# img_loc = ['samples/bird.jpg','samples/sample.jpg','samples/bird2.jpg',
+#            'samples/bird3.jpg','samples/example6.png','samples/r_sample.jpg']
+# for img in img_loc:
+    # img = cv2.imread(img)
+    # img = image_dimension(img)
+    # img = image_filter(img)
+    # res_up, res_down = up_down_scaling(img, block_size= 8)
+    # res_up = desat_graysc(res_up)
+    # print('res_up',res_up.shape)
+    # process_image_ascii(res_up)
+    
+    #dumpster
+    # img2 = cv2.adaptiveThreshold(img2, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+     #                                 cv2.THRESH_BINARY, 11, 2)
+        # print('contrast-adthreshold')
+        # display(img2)
+    
+    
+    # print(img.shape, res_up.shape, res_down.shape)
+    # print(img.shape[0]/res_down.shape[0], img.shape[1]/res_down.shape[1])
