@@ -26,16 +26,19 @@ def up_down_scaling(img, block_size):
 
     return up_scaling
 
-def desat_graysc(img):
-    grayscale_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # print('grayscale_image')
+def desat_graysc(img,cond):
+    if cond==True:
+        grayscale_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        print('grayscale_image')
+        display(grayscale_image)
+        return grayscale_image
     
-
-    desaturated_image = np.mean(img, axis=2).astype(np.uint8)
-    print('desaturated_image')
-    display(desaturated_image)
-
-    return desaturated_image
+    elif cond ==False:
+        desaturated_image = np.mean(img, axis=2).astype(np.uint8)
+        print('desaturated_image')
+        display(desaturated_image)
+        return desaturated_image
+    
 
 def fetch_ascii_char(ascii_image, char_index, ascii_len, char_size=(8, 8)):
     
@@ -117,42 +120,48 @@ for file_name in os.listdir(img_loc):
     f = os.path.join(img_loc,file_name)
     if os.path.isfile(f):
         #1st part
-        img = cv2.imread(f)
-        img = image_dimension(img)
-        img = image_sharpen(img)
-        img = desat_graysc(img)
-        img = enhance_contrast(img)
-        img = difference_of_Gaussian(img,sigma1=0.1,sigma2=6.5)        
-        img = extended_sobel(img)
-        res_up = up_down_scaling(img, block_size= 8)
-        # res_up = desat_graysc(res_up)
-        print('res_up',res_up.shape)
-        process_image_ascii(res_up)
+        # img = cv2.imread(f)
+        # img = image_dimension(img)
+        # img = image_sharpen(img)
+        # img = desat_graysc(img,False)
+        # img = enhance_contrast(img)
+        # img = difference_of_Gaussian(img,sigma1=0.1,sigma2=6.5)        
+        # img = extended_sobel(img)
+        # res_up = up_down_scaling(img, block_size= 8)
+        # # res_up = desat_graysc(res_up)
+        # print('res_up',res_up.shape)
+        # process_image_ascii(res_up)
 
-        #2nd part
-        img2 = cv2.imread(f)
-        img2 = image_dimension(img2)
-        img2 = desat_graysc(img2)
-        img2 = cv2.fastNlMeansDenoising(img2, None, 20, 7, 21) 
-        print('Noise')
-        display(img2)
-        img2 = image_sharpen(img2)
-        print('contrast-sharpen')
-        display(img2)
-        img2 = enhance_contrast(img2)
-        print('contrast')
-        display(img2)
+        # #2nd part
+        # img2 = cv2.imread(f)
+        # img2 = image_dimension(img2)
+        # img2 = desat_graysc(img2,False)
+        # # img2 = cv2.fastNlMeansDenoising(img2, None, 20, 7, 21) 
+        # # print('Noise')
+        # # display(img2)
+        # img2 = image_sharpen(img2)
+        # print('contrast-sharpen')
+        # display(img2)
+        # img2 = enhance_contrast(img2)
+        # print('contrast')
+        # display(img2)
         # img2 = cv2.fastNlMeansDenoising(img2, None, 20, 7, 21) 
         # print('Noise')
         # display(img2)
-        img2 = difference_of_Gaussian(img2,sigma1=2.5,sigma2=6.0)
-        print('contrast-dog')
-        display(img2)
+        # img2 = difference_of_Gaussian(img2,sigma1=0.1,sigma2=3.0)
+        # print('contrast-dog')
+        # display(img2)
 
-        img2 = gradient_direction(img2)
-        display(img2)
+        # # img2 = extended_sobel(img2)
+        # img2 = gradient_direction(img2)
+        # display(img2)
 
-        img2 = up_down_scaling(img2,block_size=8)
-        edge_ascii_image(img2)
+        # img2 = up_down_scaling(img2,block_size=8)
+        # edge_ascii_image(img2)
 
-
+        #3rd part 
+        img3 = cv2.imread(f)
+        img3 = image_dimension(img3)
+        img3 = desat_graysc(img3,True)
+        img3 = sobel_grad_orient(img3)
+        
