@@ -8,6 +8,19 @@ def display(img):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+def desat_graysc(img,cond):
+    if cond==True:
+        grayscale_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        print('grayscale_image')
+        display(grayscale_image)
+        return grayscale_image
+    
+    elif cond ==False:
+        desaturated_image = np.mean(img, axis=2).astype(np.uint8)
+        print('desaturated_image')
+        display(desaturated_image)
+        return desaturated_image
+
 def image_sharpen(img): #Image sharpening kernel
     kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]]) / 1
     img = cv2.filter2D(img, cv2.CV_8U, kernel)
@@ -68,6 +81,8 @@ def canny(img):
     edge_img = cv2.Canny(img,100,200)
     return edge_img
 
+
+
 def morph_filter(img):
     thresh = cv2.threshold(img, 180, 255, cv2.THRESH_BINARY)[1]
     display(thresh)
@@ -121,3 +136,28 @@ def sobel_grad_orient(img):
     ori = cv2.phase(Sx, Sy, angleInDegrees=True)
     display(ori)
     ori_map = orientation_map(mag, ori, thresh=1.0)
+
+
+# def block_based_ascii_representation(img, block_size=64, num_buckets=5):
+#     height, width = img.shape
+#     ascii_image = np.zeros_like(img)
+    
+#     # Divide the image into blocks of size block_size x block_size
+#     for i in range(0, height, block_size):
+#         for j in range(0, width, block_size):
+#             block = img[i:i + block_size, j:j + block_size]
+            
+#             # Flatten and count the occurrence of each bucket
+#             flat_block = block.flatten()
+#             bucket_counts = np.histogram(flat_block, bins=num_buckets, range=(0, 255))[0]
+            
+#             # Elect the most frequent bucket as the representative
+#             representative_bucket = np.argmax(bucket_counts)
+            
+#             # Map the representative bucket to an ASCII character index
+#             ascii_char_index = representative_bucket * (255 // num_buckets)
+            
+#             # Assign the representative character to the entire block
+#             ascii_image[i:i + block_size, j:j + block_size] = ascii_char_index
+
+#     return ascii_image
