@@ -17,9 +17,65 @@ def desat_graysc(img,cond):
     
     elif cond ==False:
         desaturated_image = np.mean(img, axis=2).astype(np.uint8)
-        print('desaturated_image')
         display(desaturated_image)
         return desaturated_image
+
+#  desaturated_image = cv2.cvtColor(img, cv2.COLOR_BGR2HLS) #np.mean(img, axis=2).astype(np.uint8)
+#         print('HLS method')
+#         display(desaturated_image)
+#         desaturated_image[:,:,2] = desaturated_image[:,:, 2] *0.2
+#         display(desaturated_image)
+#         desaturated_image = cv2.cvtColor(desaturated_image, cv2.COLOR_HLS2BGR) 
+#         print('desaturated_image')
+#         display(desaturated_image)
+#         desaturated_image = np.mean(img, axis=2).astype(np.uint8)
+#         display(desaturated_image)
+
+def hsv_val(img):
+    hsv_img = cv2.cvtColor(img,cv2.COLOR_BGR2HSV_FULL)
+    h, s, val_img = cv2.split(hsv_img)
+    val_img = cv2.multiply(val_img, 1.5)
+    display(val_img)
+    val_img =  np.clip(val_img, 0, 255).astype(np.uint8)
+    display(val_img)
+    filter_val_img = cv2.merge([h, s, val_img])
+    display(filter_val_img)
+    filter_val_img = cv2.cvtColor( filter_val_img, cv2.COLOR_HSV2BGR)
+    display(filter_val_img)
+
+    return filter_val_img
+
+
+
+def threshold_saturation(img):
+    hsv_img = cv2.cvtColor(img,cv2.COLOR_BGR2HSV_FULL)
+    _, saturate_img, _ = cv2.split(hsv_img)
+    saturate_img = cv2.multiply(saturate_img, 1.5)
+    saturate_img = np.clip(saturate_img, 0, 255).astype(np.uint8)
+    
+    print('sat_thres')
+    display(saturate_img)
+
+    return saturate_img
+
+def satval_gradient(img):
+    hsv_img = cv2.cvtColor(img,cv2.COLOR_BGR2HSV_FULL)
+    h, saturate_img, val_img = cv2.split(hsv_img)
+
+    val_img = cv2.multiply(val_img, 1.5)
+    val_img =  np.clip(val_img, 0, 255).astype(np.uint8)
+
+    saturate_img = cv2.multiply(saturate_img, 2.5)
+    saturate_img = np.clip(saturate_img, 0, 255).astype(np.uint8)
+
+    filter_img = cv2.merge([h, saturate_img, val_img])
+    filter_img = cv2.cvtColor( filter_img, cv2.COLOR_HSV2BGR)
+    display(filter_img)
+
+    return filter_img
+
+
+
 
 def image_sharpen(img): #Image sharpening kernel
     kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]]) / 1
@@ -29,17 +85,12 @@ def image_sharpen(img): #Image sharpening kernel
 
 def gradient_direction(img):
     Sx = cv2.Sobel(img, cv2.CV_32F, 1, 0, ksize=3)
-    Sy = cv2.Sobel(img, cv2.CV_32F, 0, 1, ksize=3)
-
-    
+    Sy = cv2.Sobel(img, cv2.CV_32F, 0, 1, ksize=3)    
 
     grad_theta = np.atan2(Sy,Sx)/(2*np.pi)
     grad_theta[grad_theta <= -0.4 ] = 0
     print('grad_theta',grad_theta)      
-    theta_normalise = np.add(grad_theta,0.5,where = grad_theta!=0 )
-
-    print(1,theta_normalise)
-    
+    theta_normalise = np.add(grad_theta,0.5,where = grad_theta!=0 )    
     theta_image = (theta_normalise*255).astype(np.uint8)
 
     return theta_image
