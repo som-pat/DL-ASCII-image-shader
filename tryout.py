@@ -6,18 +6,6 @@ import matplotlib.pyplot as plt
 
 
 
-
-def image_dimension(img):
-    if img.shape[0]>512 and img.shape[1]>512:
-        img = cv2.resize(img, (1024,1024), interpolation=cv2.INTER_AREA)
-        display(img)
-    else:
-        img = cv2.resize(img, (512,512), interpolation=cv2.INTER_AREA)
-        display(img)
-    
-    return img
-
-
 def up_down_scaling(img, block_size):
 
     down_scaling = cv2.resize(img,(img.shape[1] // block_size, img.shape[0] // block_size), interpolation=cv2.INTER_AREA)    
@@ -41,7 +29,7 @@ def fetch_ascii_char(ascii_image, char_index, ascii_len, char_size=(8, 8)):
     return ascii_char
 
 def luminance_to_ascii_index(luminance, num_buckets=10):
-    # Convert luminance to a bucket index (0 to 9)
+    
     return int((luminance / 255) * (num_buckets - 1))
 
 def angle_to_ascii_index(average_angle,num_buckets = 5):
@@ -77,6 +65,8 @@ def process_image_ascii(img):
     display(ascii_art_image)
     file_name = 'result/ascii' + str(im_count) + '.jpg'
     cv2.imwrite(file_name, ascii_art_image)
+    return ascii_art_image
+    
 
 ed_count = 0
 def edge_ascii_image(img):
@@ -86,8 +76,7 @@ def edge_ascii_image(img):
     ascii_len = 5
 
     edge_art = np.zeros_like(img)
-    print(edge_art.shape)
-
+    dicte = {}
     for i in range(0,img.shape[0],char_size[0]):
         for j in range(0, img.shape[1],char_size[1]):
 
@@ -97,54 +86,20 @@ def edge_ascii_image(img):
 
             average_angle = np.mean(edge)
             edge_index = angle_to_ascii_index(average_angle)
+            dicte[edge_index] = dicte.get(edge_index,0)+1
+
             edge_char = fetch_ascii_char(edge_ascii, edge_index, ascii_len, char_size)
             edge_art[i:i+ char_size[0],j:j+char_size[1]] = edge_char
-    
+    print(dicte)
     display(edge_art)
-    # return edge_art
     ed_count +=1
     file_name = 'result/saturation_edge_ascii_' + str(ed_count) + '.jpg'
     cv2.imwrite(file_name, edge_art)
+    return edge_art
+    
 
 
-# def block_based_ascii_representation(img, block_size=64, num_buckets=5):
-#     height, width = img.shape
-#     ascii_image = np.zeros_like(img)
-#     edge_ascii=cv2.imread('edgesASCII.png',cv2.IMREAD_GRAYSCALE)
-    
-#     # Divide the image into blocks of size block_size x block_size
-#     for i in range(0, height, block_size):
-#         for j in range(0, width, block_size):
-#             block = img[i:i + block_size, j:j + block_size]
-#             # print(1,block.shape)
-#             # display(block)
-            
-            
-#             # Flatten and count the occurrence of each bucket
-#             flat_block = block.flatten()
-#             print(2,flat_block, flat_block.shape)
-#             bucket_counts = np.histogram(flat_block, bins=num_buckets, range=(0, 255))[0]
-#             # print(bucket_counts, bucket_counts.shape)
-#             # plt.figure(figsize=(8, 4))
-#             # plt.bar(bin_edges[:-1], counts, width=np.diff(bin_edges), edgecolor='black', align='edge')
-#             # plt.title('Histogram of Pixel Intensities in Block')
-#             # plt.xlabel('Pixel Intensity')
-#             # plt.ylabel('Frequency')
-#             # plt.xticks(bin_edges)  # Show bin edges on the x-axis
-#             # plt.grid(axis='y')
-#             # plt.show()
-            
-#             # Elect the most frequent bucket as the representative
-#             representative_bucket = np.argmax(bucket_counts)
-            
-#             # Map the representative bucket to an ASCII character index
-#             ascii_char_index = representative_bucket * (255 // num_buckets)
-            
-#             # Assign the representative character to the entire block
-#             ascii_image[i:i + block_size, j:j + block_size] = ascii_char_index
-    
-#     display(ascii_image)
-#     return ascii_image
+
 
 
 
@@ -153,6 +108,7 @@ img_loc = 'samples'
 for file_name in os.listdir(img_loc):
     f = os.path.join(img_loc,file_name)
     if os.path.isfile(f):
+        print()
         # if count ==2:
         #     break
         # count+=1
@@ -160,68 +116,72 @@ for file_name in os.listdir(img_loc):
         # img = cv2.imread(f)
         # img = image_dimension(img)
         # img = image_sharpen(img)
-        # img = desat_graysc(img,False)
-        # img = enhance_contrast(img)
-        # img = difference_of_Gaussian(img,sigma1=0.1,sigma2=6.5)        
+        # # img = desat_graysc(img,False)
+        # # img = enhance_contrast(img)
+        # img = difference_of_Gaussian(img,sigma1=0.1,sigma2=6.5)#previouse kernel size (0,0)        
         # img = extended_sobel(img)
-        # res_up = up_down_scaling(img, block_size= 8)
+        # img = desat_graysc(img,False)
+        # # res_up = up_down_scaling(img, block_size= 8)
         # # res_up = desat_graysc(res_up)
-        # print('res_up',res_up.shape)
-        # process_image_ascii(res_up)
+        # # print('res_up',res_up.shape)
+        # img = process_image_ascii(img)
+        
+        ##Inner 2nd part 
+        img = cv2.imread(f)
+        img = image_dimension(img)
+        # img = image_sharpen(img)
+        img = lab_contrast_enhance(img)
+        img = desat_graysc(img,True)
+        img = up_down_scaling(img, block_size= 8)        
+        img = process_image_ascii(img)
+        
+        ## 4th part
+
+        # edge = cv2.imread(f)
+        # edge = image_dimension(edge)
+        # edge = enhance_edges(edge)
+        # # edge = image_sharpen(edge)
+        # edge = difference_of_Gaussian(edge,kernel1=17,kernel2=13,sigma1=0,sigma2=2.5)
+        # edge = gradient_direction(edge)        
+        # display(edge)
+        # edge = desat_graysc(edge,False)
+        # edge = enhance_contrast(edge)
+        # # img = up_down_scaling(img, block_size= 8)  
+        # edge = edge_ascii_image(edge)
+
+        # overlay_images(img,edge)
+
 
         # #2nd part
-        # img2 = cv2.imread(f)
-        # img2 = image_dimension(img2)
+        img2 = cv2.imread(f)
+        img2 = image_dimension(img2)
         # img2 = desat_graysc(img2,False)
-        # # img2 = cv2.fastNlMeansDenoising(img2, None, 20, 7, 21) 
-        # # print('Noise')
-        # # display(img2)
-        # img2 = image_sharpen(img2)
-        # print('contrast-sharpen')
-        # display(img2)
-        # img2 = enhance_contrast(img2)
-        # print('contrast')
-        # display(img2)
         # img2 = cv2.fastNlMeansDenoising(img2, None, 20, 7, 21) 
         # print('Noise')
         # display(img2)
-        # img2 = difference_of_Gaussian(img2,sigma1=3.9,sigma2=6.0)
-        # print('contrast-dog')
+        # img2 = image_sharpen(img2)
+        # print('contrast-sharpen')
         # display(img2)
-
-        # img2 = extended_sobel(img2)
-        # img2 = gradient_direction(img2)
+        img2 = enhance_edges(img2,saturation=1.32, value=0.8, lightness=1.22)
+        img2 = cv2.fastNlMeansDenoising(img2, None, 20, 7, 21) 
+        print('Noise')
+        display(img2)
+        img2 = difference_of_Gaussian(img2,kernel1=15,kernel2=13,sigma1=0,sigma2=13.0)
+        print('contrast-dog')
+        display(img2)
+        # img2 = cv2.fastNlMeansDenoising(img2, None, 20, 7, 21) 
+        # print('Noise')
         # display(img2)
+        img2 = gradient_direction(img2)
+        display(img2)
+        img2 = desat_graysc(img2,False)
+        # img2 = up_down_scaling(img2,block_size=8)
+        edge = edge_ascii_image(img2)
 
-        # # img2 = up_down_scaling(img2,block_size=8)
-        # edge_ascii_image(img2)
 
 
-        #3rd part 
-        img3 = cv2.imread(f)
-        img3 = image_dimension(img3)
-        # img3 = hsv_val(img3)
-        # img3 = threshold_saturation(img3)
-        img3 = satval_gradient(img3)
-        img3 = desat_graysc(img3,False)
+        overlay_images(img,edge)
 
-        # img3 = up_down_scaling(img3,block_size=8)
-        # laplace = cv2.Laplacian(img3, cv2.CV_8U)
-        # display(laplace)
-        img3 = cv2.normalize( img3, 0, 600, cv2.NORM_MINMAX)
-        display(img3)
-        # img3 = cv2.cvtColor(img3, cv2.COLOR_BGR2GRAY)
-        # display(img3)
         
-        img3 = image_sharpen(img3)
-        img3 = enhance_contrast(img3)
-        print('enhance_contrast')
-        display(img3)
-        img3 = difference_of_Gaussian(img3,sigma1=1.0,sigma2=6.0)
-        print('difference_of_Gaussian')
-        display(img3)
-        img3 = gradient_direction(img3)
-        print('extended_sobel')
-        display(img3)
-        img3 = edge_ascii_image(img3) 
-        # block_based_ascii_representation(img3, block_size=64, num_buckets=5)
+
+
