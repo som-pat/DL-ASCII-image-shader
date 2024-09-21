@@ -135,3 +135,143 @@
     
     # print(img.shape, res_up.shape, res_down.shape)
     # print(img.shape[0]/res_down.shape[0], img.shape[1]/res_down.shape[1])
+
+
+        # #2nd part
+        # img2 = cv2.imread(f)
+        # img2 = image_dimension(img2)
+        # img2 = desat_graysc(img2,False)
+        # # img2 = cv2.fastNlMeansDenoising(img2, None, 20, 7, 21) 
+        # # print('Noise')
+        # # display(img2)
+        # img2 = image_sharpen(img2)
+        # print('contrast-sharpen')
+        # display(img2)
+        # img2 = enhance_contrast(img2)
+        # print('contrast')
+        # display(img2)
+        # img2 = cv2.fastNlMeansDenoising(img2, None, 20, 7, 21) 
+        # print('Noise')
+        # display(img2)
+        # img2 = difference_of_Gaussian(img2,sigma1=3.9,sigma2=6.0)
+        # print('contrast-dog')
+        # display(img2)
+
+        # img2 = extended_sobel(img2)
+        # img2 = gradient_direction(img2)
+        # display(img2)
+
+        # # img2 = up_down_scaling(img2,block_size=8)
+        # edge_ascii_image(img2)
+
+
+        #3rd part 
+        # img3 = cv2.imread(f)
+        # img3 = image_dimension(img3)
+        # # img3 = hsv_val(img3)
+        # # img3 = threshold_saturation(img3)
+        # # img3 = image_sharpen(img3)
+        # # print('sharpen')
+        # img3 = satval_gradient(img3)
+        # img3 = desat_graysc(img3,False)
+
+        # # img3 = up_down_scaling(img3,block_size=8)
+        # # laplace = cv2.Laplacian(img3, cv2.CV_8U)
+        # # display(laplace)
+        # # img3 = cv2.normalize( img3, 0, 600, cv2.NORM_MINMAX)
+        # # display(img3)
+        # # img3 = cv2.cvtColor(img3, cv2.COLOR_BGR2GRAY)
+        # # display(img3)
+        
+        # # img3 = image_sharpen(img3)
+        # # img3 = enhance_contrast(img3)
+        # # print('enhance_contrast')
+        # # display(img3)
+        # img3 = image_sharpen(img3)
+        # img3 = difference_of_Gaussian(img3,sigma1=2.0,sigma2=6.0)
+        # print('difference_of_Gaussian')
+        # display(img3)
+        # img3 = gradient_direction(img3)
+        # print('extended_sobel')
+        # display(img3)
+        # img3 = edge_ascii_image(img3) 
+
+# def block_based_ascii_representation(img, block_size=64, num_buckets=5):
+#     height, width = img.shape
+#     ascii_image = np.zeros_like(img)
+#     edge_ascii=cv2.imread('edgesASCII.png',cv2.IMREAD_GRAYSCALE)
+    
+#     # Divide the image into blocks of size block_size x block_size
+#     for i in range(0, height, block_size):
+#         for j in range(0, width, block_size):
+#             block = img[i:i + block_size, j:j + block_size]
+#             # print(1,block.shape)
+#             # display(block)
+            
+            
+#             # Flatten and count the occurrence of each bucket
+#             flat_block = block.flatten()
+#             print(2,flat_block, flat_block.shape)
+#             bucket_counts = np.histogram(flat_block, bins=num_buckets, range=(0, 255))[0]
+#             # print(bucket_counts, bucket_counts.shape)
+#             # plt.figure(figsize=(8, 4))
+#             # plt.bar(bin_edges[:-1], counts, width=np.diff(bin_edges), edgecolor='black', align='edge')
+#             # plt.title('Histogram of Pixel Intensities in Block')
+#             # plt.xlabel('Pixel Intensity')
+#             # plt.ylabel('Frequency')
+#             # plt.xticks(bin_edges)  # Show bin edges on the x-axis
+#             # plt.grid(axis='y')
+#             # plt.show()
+            
+#             # Elect the most frequent bucket as the representative
+#             representative_bucket = np.argmax(bucket_counts)
+            
+#             # Map the representative bucket to an ASCII character index
+#             ascii_char_index = representative_bucket * (255 // num_buckets)
+            
+#             # Assign the representative character to the entire block
+#             ascii_image[i:i + block_size, j:j + block_size] = ascii_char_index
+    
+#     display(ascii_image)
+#     return ascii_image
+
+
+# def block_based_ascii_representation(img, block_size=64, num_buckets=5):
+#     height, width = img.shape
+#     ascii_image = np.zeros_like(img)
+#     edge_ascii=cv2.imread('edgesASCII.png',cv2.IMREAD_GRAYSCALE)
+    
+#     # Divide the image into blocks of size block_size x block_size
+#     for i in range(0, height, block_size):
+#         for j in range(0, width, block_size):
+#             block = img[i:i + block_size, j:j + block_size]
+#             # print(1,block.shape)
+#             # display(block)
+            
+            
+#             # Flatten and count the occurrence of each bucket
+#             flat_block = block.flatten()
+#             print(2,flat_block, flat_block.shape)
+#             bucket_counts = np.histogram(flat_block, bins=num_buckets, range=(0, 255))[0]
+#             # print(bucket_counts, bucket_counts.shape)
+#             # plt.figure(figsize=(8, 4))
+#             # plt.bar(bin_edges[:-1], counts, width=np.diff(bin_edges), edgecolor='black', align='edge')
+#             # plt.title('Histogram of Pixel Intensities in Block')
+#             # plt.xlabel('Pixel Intensity')
+#             # plt.ylabel('Frequency')
+#             # plt.xticks(bin_edges)  # Show bin edges on the x-axis
+#             # plt.grid(axis='y')
+#             # plt.show()
+            
+#             # Elect the most frequent bucket as the representative
+#             representative_bucket = np.argmax(bucket_counts)
+            
+#             # Map the representative bucket to an ASCII character index
+#             ascii_char_index = representative_bucket * (255 // num_buckets)
+            
+#             # Assign the representative character to the entire block
+#             ascii_image[i:i + block_size, j:j + block_size] = ascii_char_index
+    
+#     display(ascii_image)
+#     return ascii_image
+
