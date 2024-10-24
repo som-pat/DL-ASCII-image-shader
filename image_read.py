@@ -275,3 +275,114 @@
 #     display(ascii_image)
 #     return ascii_image
 
+
+
+#2nd part (add 2nds to 4th and delete below)
+        # img2 = cv2.imread(f)
+        # img2 = image_dimension(img2)
+        # # img2 = desat_graysc(img2,False)
+        # # img2 = cv2.fastNlMeansDenoising(img2, None, 20, 7, 21) 
+        # # print('Noise')
+        # # display(img2)
+        # # img2 = image_sharpen(img2)
+        # # print('contrast-sharpen')
+        # # display(img2)
+        # img2 = enhance_edges(img2,saturation=1.32, value=0.8, lightness=1.22)
+        # img2 = cv2.fastNlMeansDenoising(img2, None, 20, 7, 21) 
+        # print('Noise')
+        # display(img2)
+        # img2 = difference_of_Gaussian(img2,kernel1=15,kernel2=13,sigma1=0,sigma2=13.0)
+        # print('contrast-dog')
+        # display(img2)
+        # # img2 = cv2.fastNlMeansDenoising(img2, None, 20, 7, 21) 
+        # # print('Noise')
+        # # display(img2)
+        # img2 = gradient_direction(img2)
+        # display(img2)
+        # img2 = desat_graysc(img2,False)
+        # # img2 = up_down_scaling(img2,block_size=8)
+        # edge = edge_ascii_image(img2)
+
+
+
+        # overlay_images(img,edge)
+
+        # img = cv2.imread(f)
+        # img = image_dimension(img)
+        # img = enhance_edges(img,saturation=1.12, value=0.6, lightness=1.42)
+        # # img = cv2.fastNlMeansDenoising(img, None, 20, 7, 21)
+        # # print('Noise')
+        # # display(img)
+        # img = desat_graysc(img, True)
+        # img = prewitt_filter(img)
+        # img = difference_of_Gaussian(img,kernel1=15,kernel2=13,sigma1=0,sigma2=15.0)
+        # img = gradient_direction(img)
+        # img = up_down_scaling(img, block_size=8)
+        # # img = desat_graysc(img, True)
+        # img = edge_ascii_image(img)
+#1st part
+        # img = cv2.imread(f)
+        # img = image_dimension(img)
+        # img = image_sharpen(img)
+        # # img = desat_graysc(img,False)
+        # # img = enhance_contrast(img)
+        # img = difference_of_Gaussian(img,sigma1=0.1,sigma2=6.5)#previouse kernel size (0,0)        
+        # img = extended_sobel(img)
+        # img = desat_graysc(img,False)
+        # # res_up = up_down_scaling(img, block_size= 8)
+        # # res_up = desat_graysc(res_up)
+        # # print('res_up',res_up.shape)
+        # img = process_image_ascii(img)
+
+
+def gradient_direction(img):
+    img = cv2.GaussianBlur(img,(7,7),0)
+    Sx = cv2.Sobel(img, cv2.CV_32F, 1, 0, ksize=5)
+    Sy = cv2.Sobel(img, cv2.CV_32F, 0, 1, ksize=5)
+
+    Sx = cv2.convertScaleAbs(Sx)
+    Sy = cv2.convertScaleAbs(Sy)
+
+
+    grad_theta = np.atan2(Sy,Sx)/(2*np.pi)
+
+    # print('grad_theta',grad_theta)
+    # dic_col = defaultdict(int)  # Initialize with default int (which is 0)
+    # for value in grad_theta.flatten():
+    #     dic_col[value] += 1
+    # print(1,dic_col)
+    # display(grad_theta)
+    print('Min:',np.min(grad_theta))
+    print('Max:',np.max(grad_theta))
+    # grad_theta[grad_theta < -0.45]=0
+
+         
+    theta_normalise = np.add(grad_theta,0.5,where = grad_theta!=0)    
+    theta_image = (theta_normalise*255).astype(np.uint8)
+    # theta = defaultdict(int)
+    # for pixel_value in theta_image.flatten():
+    #     theta[pixel_value] += 1
+    # print()
+    # print(2,theta)
+    theta_image = np.floor(theta_image)
+    
+    # flo = defaultdict(int)
+    # for flo_value in theta_image.flatten():
+    #     flo[flo_value] += 1
+    # print()
+    # print(3,flo)
+    # display(theta_image)
+    return theta_image
+
+        # edge = cv2.imread(f)
+        # edge = image_dimension(edge)
+        # edge = enhance_edges(edge,saturation=1.32, value=0.6, lightness=1.22) 
+        # edge = cv2.fastNlMeansDenoising(edge, None, 20, 7, 21)        
+        # edge = dog(edge,kernel1=15,kernel2=21,sigma1=1.3,sigma2=3.2)
+        # # edge = extended_sobel(edge)
+        # edge = gradient_direction(edge)
+        # edge = desat_graysc(edge,1)              
+        # edge = up_down_scaling(edge, block_size= 8)  
+        # edge = edge_ascii_image(edge)
+
+        # combi = overlay_images(img,edge)

@@ -6,30 +6,18 @@ import matplotlib.pyplot as plt
 
 
 
-def up_down_scaling(img, block_size):
-
-    down_scaling = cv2.resize(img,(img.shape[1] // block_size, img.shape[0] // block_size), interpolation=cv2.INTER_AREA)    
-
-    up_scaling = cv2.resize(down_scaling, (down_scaling.shape[1] * block_size, down_scaling.shape[0] * block_size), 
-                            interpolation=cv2.INTER_NEAREST)
-    display(up_scaling)
-
-    return up_scaling
-
 
     
 
 def fetch_ascii_char(ascii_image, char_index, ascii_len, char_size=(8, 8)):
     
     x = (char_index % ascii_len) * char_size[0]  # Horizontal position
-    y = (char_index // ascii_len) * char_size[1]  # Vertical position
-    
+    y = (char_index // ascii_len) * char_size[1]  # Vertical position    
     # Crop the specific ASCII character 
     ascii_char = ascii_image[y:y + char_size[1], x:x + char_size[0]]
     return ascii_char
 
-def luminance_to_ascii_index(luminance, num_buckets=10):
-    
+def luminance_to_ascii_index(luminance, num_buckets=10):    
     return int((luminance / 255) * (num_buckets - 1))
 
 def angle_to_ascii_index(average_angle,num_buckets = 5):
@@ -99,7 +87,10 @@ def edge_ascii_image(img):
     
 
 
-
+def dilation(img):
+    kernel = np.ones((3,3),np.uint8)
+    dilate_img = cv2.dilate(img, kernel, iterations=1)
+    return dilate_img
 
 
 
@@ -109,78 +100,38 @@ for file_name in os.listdir(img_loc):
     f = os.path.join(img_loc,file_name)
     if os.path.isfile(f):
         print()
-        # if count ==2:
-        #     break
-        # count+=1
-        #1st part
-        # img = cv2.imread(f)
-        # img = image_dimension(img)
-        # img = image_sharpen(img)
-        # # img = desat_graysc(img,False)
-        # # img = enhance_contrast(img)
-        # img = difference_of_Gaussian(img,sigma1=0.1,sigma2=6.5)#previouse kernel size (0,0)        
-        # img = extended_sobel(img)
-        # img = desat_graysc(img,False)
-        # # res_up = up_down_scaling(img, block_size= 8)
-        # # res_up = desat_graysc(res_up)
-        # # print('res_up',res_up.shape)
-        # img = process_image_ascii(img)
+        if count ==1:
+            break
+        count+=1
         
         ##Inner 2nd part 
         img = cv2.imread(f)
         img = image_dimension(img)
-        # img = image_sharpen(img)
+        img = image_sharpen(img)
         img = lab_contrast_enhance(img)
-        img = desat_graysc(img,True)
+        img = desat_graysc(img,False)
         img = up_down_scaling(img, block_size= 8)        
         img = process_image_ascii(img)
         
-        ## 4th part
+        ## edge part
+        edge = cv2.imread(f)
+        edge = image_dimension(edge)
+        edge = enhance_edges(edge,saturation=1.42, value=0.5, lightness=1.22)
+        edge = cv2.fastNlMeansDenoising(edge, None, 20, 7, 21)
+        edge = difference_of_Gaussian(edge,kernel1=17,kernel2=13,sigma1=0,sigma2=15)
+        # edge = extended_sobel(edge)
+        edge = gradient_direction(edge)        
+        edge = desat_graysc(edge,False)
+        edge = up_down_scaling(edge, block_size= 8)  
+        edge = edge_ascii_image(edge)
 
-        # edge = cv2.imread(f)
-        # edge = image_dimension(edge)
-        # edge = enhance_edges(edge)
-        # # edge = image_sharpen(edge)
-        # edge = difference_of_Gaussian(edge,kernel1=17,kernel2=13,sigma1=0,sigma2=2.5)
-        # edge = gradient_direction(edge)        
-        # display(edge)
-        # edge = desat_graysc(edge,False)
-        # edge = enhance_contrast(edge)
-        # # img = up_down_scaling(img, block_size= 8)  
-        # edge = edge_ascii_image(edge)
-
-        # overlay_images(img,edge)
-
-
-        # #2nd part
-        img2 = cv2.imread(f)
-        img2 = image_dimension(img2)
-        # img2 = desat_graysc(img2,False)
-        # img2 = cv2.fastNlMeansDenoising(img2, None, 20, 7, 21) 
-        # print('Noise')
-        # display(img2)
-        # img2 = image_sharpen(img2)
-        # print('contrast-sharpen')
-        # display(img2)
-        img2 = enhance_edges(img2,saturation=1.32, value=0.8, lightness=1.22)
-        img2 = cv2.fastNlMeansDenoising(img2, None, 20, 7, 21) 
-        print('Noise')
-        display(img2)
-        img2 = difference_of_Gaussian(img2,kernel1=15,kernel2=13,sigma1=0,sigma2=13.0)
-        print('contrast-dog')
-        display(img2)
-        # img2 = cv2.fastNlMeansDenoising(img2, None, 20, 7, 21) 
-        # print('Noise')
-        # display(img2)
-        img2 = gradient_direction(img2)
-        display(img2)
-        img2 = desat_graysc(img2,False)
-        # img2 = up_down_scaling(img2,block_size=8)
-        edge = edge_ascii_image(img2)
+        combi = overlay_images(img,edge)
+        # rcombi = red_shader(combi)
+       
 
 
 
-        overlay_images(img,edge)
+
 
         
 
