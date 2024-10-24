@@ -13,4 +13,6 @@
 - [https://setosa.io/ev/image-kernels/]
 - [https://users.cs.northwestern.edu/~sco590/winnemoeller-cag2012.pdf]
 - [https://github.com/aladdinpersson/Machine-Learning-Collection/tree/master/ML/Pytorch/image_segmentation/semantic_segmentation_unet]
+- [https://github.com/iocak28/UNet_edge_detection]
+- [https://www.kaggle.com/datasets/balraj98/berkeley-segmentation-dataset-500-bsds500]
 
