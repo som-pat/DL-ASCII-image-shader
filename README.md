@@ -2,7 +2,8 @@
 
 ## Current Results
 ![image](https://github.com/user-attachments/assets/9cf28cdf-e995-4dd7-a7ec-c33dcfc5ee0a)
-![image](https://github.com/user-attachments/assets/f88d4963-e8bb-4156-9cb6-f085e82dc14e)
+![image](https://github.com/user-attachments/assets/d1d54bf5-a63d-4807-9d15-853bbbac7e16)
+
 
 ## References
 -[https://github.com/GarrettGunnell/AcerolaFX/tree/main]
