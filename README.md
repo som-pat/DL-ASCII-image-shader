@@ -1,10 +1,13 @@
 # ASCII Image Shader
 
 ## Current Results
-![image](https://github.com/user-attachments/assets/9cf28cdf-e995-4dd7-a7ec-c33dcfc5ee0a)
 
+![image](https://github.com/user-attachments/assets/0916be93-8e0a-4693-867f-c23f7998a621)
 
-![image](https://github.com/user-attachments/assets/d1d54bf5-a63d-4807-9d15-853bbbac7e16)
+![image](https://github.com/user-attachments/assets/9742c871-4758-48c0-9bf4-470845729f91)
+
+![image](https://github.com/user-attachments/assets/00ab1430-2e18-41d3-9914-aab95cd402e5)
+
 
 
 ## References
