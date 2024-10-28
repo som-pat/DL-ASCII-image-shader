@@ -334,18 +334,31 @@ def overlay_images(img1, img2):
     cv2.imwrite(file_loc, combined_image)
     return combined_image
 
-red_count = 0
-def red_shader(img):
-    rsi = np.zeros((img.shape[0], img.shape[1], 3), dtype=np.uint8)
-    rsi[:,:,2] = (0.6 * img).astype(np.uint8) 
-    rsi[:,:,1] = (0.2 * img).astype(np.uint8)
-    rsi[:,:,0] = (0.2 * img).astype(np.uint8)
 
-    #display(rsi)
+
+red_count = 0
+
+def mix_color_shader(ascii_img, original, gamma=1.2):
+
+    ascii_norm = cv2.normalize(ascii_img.astype(np.float32), None, 0, 1, cv2.NORM_MINMAX)
+
+    b, g, r = cv2.split(original)
+
+    b = cv2.multiply(b.astype(np.float32), ascii_norm)
+    g = cv2.multiply(g.astype(np.float32), ascii_norm)
+    r = cv2.multiply(r.astype(np.float32), ascii_norm)
+
+    colored_ascii = cv2.merge([b, g, r]).astype(np.uint8)
+    display(colored_ascii)
+
+    inv_gamma = 1.0 / gamma
+    lut = np.array([((i / 255.0) ** inv_gamma) * 255 for i in np.arange(0, 256)]).astype("uint8")
+    cac= cv2.LUT(colored_ascii, lut)
+    
     global red_count 
     red_count += 1
-    file_loc = 'result/red_shade'+str(red_count)+'.jpg'
-    cv2.imwrite(file_loc, rsi) 
+    file_loc = 'color_shade/shade'+str(red_count)+'.jpg'
+    cv2.imwrite(file_loc, cac) 
 
-    return rsi
 
+    return cac

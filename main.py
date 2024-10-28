@@ -259,9 +259,10 @@ for file_name in os.listdir(img_loc):
     f = os.path.join(img_loc,file_name)
     if os.path.isfile(f):
 
-        img = cv2.imread(f)
-        img = image_dimension(img)
-        img = lab_contrast_enhance(img, factor=1.052)
+        og = cv2.imread(f)
+        og = image_dimension(og)
+
+        img = lab_contrast_enhance(og, factor=1.052)
         img = cv2.fastNlMeansDenoising(img, None, 20, 7, 21)
         image1 = desat_graysc(img, 2)
         image1 = canny_edge_detection(image1)
@@ -273,10 +274,7 @@ for file_name in os.listdir(img_loc):
         img = process_image_ascii(img)
 
 
-
-        edge = cv2.imread(f)
-        edge = image_dimension(edge)
-        edge = enhance_edges(edge,saturation=1.32, value=0.85, lightness=1.29)        
+        edge = enhance_edges(og,saturation=1.32, value=0.85, lightness=1.29)        
         edge = desat_graysc(edge,4)
         edge = cv2.medianBlur(edge,9)
         edge = image_sharpen(edge)
@@ -285,6 +283,7 @@ for file_name in os.listdir(img_loc):
         edge = cv2.medianBlur(edge,3)
         edge = gradient_direction(edge, edge_Threshold = 50, block_threshold = 10)
         edge = ascii_edge_mapping(edge)
-
+        
 
         combi = overlay_images(img,edge)
+        color_combi =mix_color_shader(combi, og)
